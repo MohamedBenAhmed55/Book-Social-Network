@@ -8,18 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("books")
 @RequiredArgsConstructor
-@Tag(name="Book")
+@Tag(name = "Book")
 public class BookController {
     private final BookService service;
 
     @PostMapping
     public ResponseEntity<Integer> saveBook(@Valid @RequestBody BookRequest request, Authentication connectedUser) {
-        return ResponseEntity.ok(service.save(request,connectedUser));
+        return ResponseEntity.ok(service.save(request, connectedUser));
     }
 
     @GetMapping("{book-id}")
@@ -33,7 +31,7 @@ public class BookController {
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             Authentication connectedUser
     ) {
-        return ResponseEntity.ok(service.findAllBooks(page,size,connectedUser));
+        return ResponseEntity.ok(service.findAllBooks(page, size, connectedUser));
     }
 
     @GetMapping("/owner")
@@ -41,8 +39,8 @@ public class BookController {
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             Authentication connectedUser
-    ){
-        return ResponseEntity.ok(service.findAllBooksByOwner(page,size,connectedUser));
+    ) {
+        return ResponseEntity.ok(service.findAllBooksByOwner(page, size, connectedUser));
     }
 
     @GetMapping("/borrowed")
@@ -50,8 +48,8 @@ public class BookController {
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             Authentication connectedUser
-    ){
-        return ResponseEntity.ok(service.findAllBorrowedBooks(page,size,connectedUser));
+    ) {
+        return ResponseEntity.ok(service.findAllBorrowedBooks(page, size, connectedUser));
     }
 
     @GetMapping("/returned")
@@ -59,8 +57,8 @@ public class BookController {
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             Authentication connectedUser
-    ){
-        return ResponseEntity.ok(service.findAllReturnedBooks(page,size,connectedUser));
+    ) {
+        return ResponseEntity.ok(service.findAllReturnedBooks(page, size, connectedUser));
     }
 
     // Change Shareable status
@@ -68,35 +66,41 @@ public class BookController {
     public ResponseEntity<Integer> updateShareableStatus(
             @PathVariable("book-id") Integer bookId,
             Authentication connectedUser
-    ){
-        return ResponseEntity.ok(service.updateShareableStatus(bookId,connectedUser));
+    ) {
+        return ResponseEntity.ok(service.updateShareableStatus(bookId, connectedUser));
     }
 
     @PatchMapping("/archived/{book-id}")
     public ResponseEntity<Integer> updateArchivedStatus(
             @PathVariable("book-id") Integer bookId,
             Authentication connectedUser
-    ){
-        return ResponseEntity.ok(service.updateArchivedStatus(bookId,connectedUser));
+    ) {
+        return ResponseEntity.ok(service.updateArchivedStatus(bookId, connectedUser));
     }
 
     @PostMapping("/borrow/{book-id}")
     public ResponseEntity<Integer> borrowBook(
             @PathVariable("book-id") Integer bookId,
             Authentication connectedUser
-    ){
-        return ResponseEntity.ok(service.borrowBook(bookId,connectedUser));
+    ) {
+        return ResponseEntity.ok(service.borrowBook(bookId, connectedUser));
     }
 
-    @PostMapping("/borrow/return/{book-id}")
+    @PatchMapping("/borrow/return/{book-id}")
     public ResponseEntity<Integer> returnBorrowedBook(
             @PathVariable("book-id") Integer bookId,
             Authentication connectedUser
-    ){
-        return ResponseEntity.ok(service.returnBorrowBook(bookId,connectedUser));
+    ) {
+        return ResponseEntity.ok(service.returnBorrowedBook(bookId, connectedUser));
     }
 
-
+    @PatchMapping("/borrow/return/approved/{book-id}")
+    public ResponseEntity<Integer> approveReturnBorrowedBook(
+            @PathVariable("book-id") Integer bookId,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity.ok(service.approveReturnBorrowedBook(bookId, connectedUser));
+    }
 
 
 }

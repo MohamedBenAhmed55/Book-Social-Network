@@ -181,7 +181,7 @@ public class BookService {
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
     }
 
-    public Integer returnBorrowBook(Integer bookId, Authentication connectedUser) {
+    public Integer returnBorrowedBook(Integer bookId, Authentication connectedUser) {
         // The book should exist
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with the ID::" + bookId));
@@ -203,6 +203,30 @@ public class BookService {
 
         // Change return status
         bookTransactionHistory.setReturned(true);
+        return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
+    }
+
+    public Integer approveReturnBorrowedBook(Integer bookId, Authentication connectedUser) {
+        // The book should exist
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with the ID::" + bookId));
+
+        // the book should be shareable and not archived
+        if(book.isArchived() || !book.isShareable()){
+            throw new OperationNotPermittedException("The requested book cannot be borrowed since it is archived or not shareable");
+        }
+
+        User user = ((User) connectedUser.getPrincipal());
+        // The user shouldn't be the owner of the book
+        if(Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You cannot borrow or return your own book");
+        }
+
+        // The borrow operation should exist in history, the book should be owned by the userId and it returned = true
+        BookTransactionHistory bookTransactionHistory = bookTransactionHistoryRepository.findByBookIdAndOwnerId(bookId,user.getId())
+                .orElseThrow(() -> new OperationNotPermittedException("The book is not returned yet. You cannot approve its return"));
+
+        bookTransactionHistory.setReturnApproved(true);
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
     }
 }
