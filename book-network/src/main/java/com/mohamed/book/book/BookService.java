@@ -78,10 +78,13 @@ public class BookService {
         );
     }
 
+    // Find all the borrowed books by a user
     public PageResponse<BorrowedBookResponse> findAllBorrowedBooks(int page, int size, Authentication connectedUser) {
+        // Retrieve the connected user
         User user = ((User) connectedUser.getPrincipal());
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Page<BookTransactionHistory> allBorrowedBooks = bookTransactionHistoryRepository.findAllBorrowedBooks(pageable,user.getId());
+        // Transform book list to BorrowedBookResponse List
         List<BorrowedBookResponse> bookResponse = allBorrowedBooks.stream()
                 .map(bookMapper::toBorrowedBookResponse)
                 .toList();
@@ -114,31 +117,39 @@ public class BookService {
                 allBorrowedBooks.isLast()
         );
     }
-
+    // Update Shareable Status for a book
     public Integer updateShareableStatus(Integer bookId, Authentication connectedUser) {
+        // Look for the book, if not found return an exception
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with the ID::" + bookId));
         User user = ((User) connectedUser.getPrincipal());
+        // If the user is not the owner of the book they can't change its status, return an exception
         if(!Objects.equals(book.getOwner().getId(), user.getId())){
             throw new OperationNotPermittedException("You cannot update books shareable status");
         }
+        // Change shareable status
         book.setShareable(!book.isShareable());
         bookRepository.save(book);
         return bookId;
     }
 
+    // Update Archived Status for a book
     public Integer updateArchivedStatus(Integer bookId, Authentication connectedUser) {
+        // Look for the book, if not found return an exception
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with the ID::" + bookId));
         User user = ((User) connectedUser.getPrincipal());
+        // If the user is not the owner of the book they can't change its status, return an exception
         if(!Objects.equals(book.getOwner().getId(), user.getId())){
             throw new OperationNotPermittedException("You cannot update books archived status");
         }
+        // Change archived status
         book.setArchived(!book.isArchived());
         bookRepository.save(book);
         return bookId;
     }
 
+    // Borrow a book
     public Integer borrowBook(Integer bookId, Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with the ID::" + bookId));
@@ -160,6 +171,7 @@ public class BookService {
             throw new OperationNotPermittedException("The requested book is already borrowed");
         }
 
+        // The transaction changes the current user having the book, that's why we always check from this table
         BookTransactionHistory bookTransactionHistory = BookTransactionHistory.builder()
                 .user(user)
                 .book(book)

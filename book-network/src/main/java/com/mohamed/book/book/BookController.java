@@ -63,6 +63,7 @@ public class BookController {
         return ResponseEntity.ok(service.findAllReturnedBooks(page,size,connectedUser));
     }
 
+    // Change Shareable status
     @PatchMapping("/shareable/{book-id}")
     public ResponseEntity<Integer> updateShareableStatus(
             @PathVariable("book-id") Integer bookId,
@@ -86,4 +87,6 @@ public class BookController {
     ){
         return ResponseEntity.ok(service.borrowBook(bookId,connectedUser));
     }
+
+
 }

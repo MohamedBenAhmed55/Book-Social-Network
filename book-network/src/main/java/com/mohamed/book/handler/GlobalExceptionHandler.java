@@ -16,6 +16,7 @@ import java.util.Set;
 import static com.mohamed.book.handler.BusinessErrorCode.*;
 import static org.springframework.http.HttpStatus.*;
 
+// Handler for the custom Exception codes / Exceptions
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
