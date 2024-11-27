@@ -4,6 +4,8 @@ package com.mohamed.book.feedback;
 import com.mohamed.book.book.Book;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class FeedbackMapper {
     public Feedback toFeedback(FeedbackRequest request) {
@@ -13,6 +15,14 @@ public class FeedbackMapper {
                 .book(Book.builder()
                         .id(request.bookId())
                         .build())
+                .build();
+    }
+
+    public FeedbackResponse toFeedbackResponse(Feedback feedback, Integer id) {
+        return FeedbackResponse.builder()
+                .note(feedback.getNote())
+                .comment(feedback.getComment())
+                .ownFeedback(Objects.equals(feedback.getCreatedBy(), id))
                 .build();
     }
 }
