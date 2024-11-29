@@ -13,7 +13,7 @@ public enum BusinessErrorCode {
     NEW_PASSWORD_DOES_NOT_MATCH(301,BAD_REQUEST,"The new Password does not match"),
     ACCOUNT_LOCKED(302,FORBIDDEN,"User account is locked"),
     ACCOUNT_DISABLED(303,FORBIDDEN,"User account is disabled"),
-    BAD_CREDENTIALS(304,FORBIDDEN,"Loging and/or password is incorrect"),
+    BAD_CREDENTIALS(304,FORBIDDEN,"Login and/or password is incorrect"),
     ;
     private final int code;
     private final String description;
