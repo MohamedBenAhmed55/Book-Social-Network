@@ -1,20 +1,18 @@
 import {Component, OnInit} from '@angular/core';
+import {PageResponseBookResponse} from "../../../../services/models/page-response-book-response";
 import {BookService} from "../../../../services/services/book.service";
 import {Router} from "@angular/router";
-import {PageResponseBookResponse} from "../../../../services/models/page-response-book-response";
 import {BookResponse} from "../../../../services/models/book-response";
 
 @Component({
-  selector: 'app-book-list',
-  templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.scss'
+  selector: 'app-my-books',
+  templateUrl: './my-books.component.html',
+  styleUrl: './my-books.component.scss'
 })
-export class BookListComponent implements OnInit {
+export class MyBooksComponent implements OnInit{
   page = 0;
   size = 4;
-  bookResponse:PageResponseBookResponse= {}
-  message: string = '';
-  level :string = 'success';
+  bookResponse: PageResponseBookResponse = {}
 
 
   constructor(
@@ -64,24 +62,23 @@ export class BookListComponent implements OnInit {
     this.findAllBooks()
   }
 
-  get isLastPage(): boolean{
+  get isLastPage(): boolean {
     return this.page == this.bookResponse.totalPages as number - 1
   }
 
-  borrowBook(book: BookResponse) {
-    this.message = ''
-    this.bookService.borrowBook({
-      'book-id': book.id as number
-    }).subscribe({
-      next: () => {
-        this.level='success'
-        this.message = 'Book successfully added to your list';
-      },
-      error: (err) => {
-        console.log(err);
-        this.message = err.error.error;
-        this.level='error'
-      }
+
+  archiveBook(book: BookResponse) {
+    this.bookService.updateArchivedStatus({
+      "book-id": book.id as number,
     })
+    this.findAllBooks()
+  }
+
+  shareBook(book: BookResponse) {
+
+  }
+
+  editBook(book: BookResponse) {
+
   }
 }
