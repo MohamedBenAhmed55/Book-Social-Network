@@ -9,7 +9,7 @@ import {BookResponse} from "../../../../services/models/book-response";
   templateUrl: './my-books.component.html',
   styleUrl: './my-books.component.scss'
 })
-export class MyBooksComponent implements OnInit{
+export class MyBooksComponent implements OnInit {
   page = 0;
   size = 4;
   bookResponse: PageResponseBookResponse = {}
@@ -26,7 +26,7 @@ export class MyBooksComponent implements OnInit{
   }
 
   findAllBooks() {
-    this.bookService.findAllBooks(
+    this.bookService.findAllBooksByOwner(
       {
         page: this.page,
         size: this.size,
@@ -70,15 +70,25 @@ export class MyBooksComponent implements OnInit{
   archiveBook(book: BookResponse) {
     this.bookService.updateArchivedStatus({
       "book-id": book.id as number,
+    }).subscribe({
+      next: () => {
+        book.archived = !book.archived;
+      }
     })
     this.findAllBooks()
   }
 
   shareBook(book: BookResponse) {
-
+    this.bookService.updateShareableStatus$Response({
+      'book-id': book.id as number,
+    }).subscribe({
+      next: () => {
+        book.shareable = !book.shareable;
+      }
+    })
   }
 
   editBook(book: BookResponse) {
-
+    this.router.navigate(['books', 'manage', book.id]);
   }
 }
