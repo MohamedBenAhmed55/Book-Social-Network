@@ -13,7 +13,6 @@ import {FeedbackService} from "../../../../services/services/feedback.service";
 export class BorrowedBookListComponent implements OnInit {
   borrowedBooks: PageResponseBorrowedBookResponse = {};
   feedbackRequest: FeedbackRequest = {bookId: 0, comment: "", note: 0};
-
   page = 0
   size = 5;
   selectedBook: BorrowedBookResponse | undefined = undefined;
