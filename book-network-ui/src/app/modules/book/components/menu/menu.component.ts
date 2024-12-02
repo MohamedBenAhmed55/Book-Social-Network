@@ -8,7 +8,8 @@ import {Component, OnInit} from '@angular/core';
 export class MenuComponent implements OnInit {
 
   logout() {
-
+    localStorage.removeItem('token')
+    window.location.reload()
   }
 
   ngOnInit(): void {

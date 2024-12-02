@@ -63,6 +63,11 @@ export class ReturnBooksComponent implements OnInit {
     this.findAllReturnedBooks();
   }
 
+  goToPage(index: number) {
+    this.page = index;
+    this.findAllReturnedBooks();
+  }
+
   get isLastPage() {
     return this.page === this.returnedBooks.totalPages as number - 1;
   }
